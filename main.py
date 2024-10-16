@@ -10,26 +10,20 @@ def main():
 
     files = get_files_in_dir(path)
     for file in files:
-        print(f"File {file.name}")
         source_path = file.absolute()
-        print(source_path)
 
+        path_obj = Path(path)
         target_folder = get_target_folder(file.suffix)
-        print(target_folder)
+        target_folder_path = path_obj / target_folder
+        target_path = path_obj / target_folder / file.name
 
-    # print(target_folder)
-        target_path = file.parent / target_folder / file.name
-        print(target_path)
-
-    # path = Path(path) / "images"
-
-    # if path.exists():
-    #     print("path exists")
-    # else:
-    #     path.mkdir()
-
-    # return_path = source_path.rename(target_path)
-    # print(return_path)
+        if target_path.parent.exists():
+            new_path = source_path.rename(target_path)
+            print(new_path)
+        else:
+            target_folder_path.mkdir(exist_ok=True)
+            new_path = source_path.rename(target_path)
+            print(new_path)
 
 
 main()

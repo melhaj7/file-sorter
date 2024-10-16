@@ -17,5 +17,6 @@ def get_files_by_ext(path, ext):
 
 def get_target_folder(ext):
     for key, value in SORTING_RULES.items():
-        if key == ext:
+        if ext == key:
             return value
+    return SORTING_RULES["default"]

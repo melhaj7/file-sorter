@@ -4,5 +4,5 @@ SORTING_RULES = {
     ".jpg": "images",
     ".exe": "programs",
     "zip": "compressed",
-    "default": "others"
+    "default": "misc"
 }
