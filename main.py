@@ -1,29 +1,25 @@
-from pathlib import Path
-from file_scanner import *
-from sorter_logic import *
-from config import SORTING_RULES
+import logging
+from file_scanner import get_destination_path, get_files_in_dir, move_file
 
 
 def main():
     path = "C:/Users/ichib/Music/Sort tutorial"
-    # path = Path("C:/Users/ichib/Music/Sort tutorial")
+    logger = logging.getLogger(__name__)
+    logging.basicConfig(filename="logs.log",
+                        encoding='utf-8', level=logging.DEBUG)
 
     files = get_files_in_dir(path)
     for file in files:
         source_path = file.absolute()
+        destination_path = get_destination_path(path, file)
 
-        path_obj = Path(path)
-        target_folder = get_target_folder(file.suffix)
-        target_folder_path = path_obj / target_folder
-        target_path = path_obj / target_folder / file.name
-
-        if target_path.parent.exists():
-            new_path = source_path.rename(target_path)
-            print(new_path)
-        else:
-            target_folder_path.mkdir(exist_ok=True)
-            new_path = source_path.rename(target_path)
-            print(new_path)
+        try:
+            logger.debug("moving file from: %s to: %s",
+                         source_path, destination_path)
+            move_file(source_path, destination_path)
+        except Exception as e:
+            logger.error("Fail %s: moving %s from: %s to: %s",
+                         e, file.name, source_path, destination_path)
 
 
 main()
