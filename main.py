@@ -1,25 +1,34 @@
-import logging
-from file_scanner import get_destination_path, get_files_in_dir, move_file
+import argparse
+from datetime import datetime
+from sorter_logic import sort_by_type, undo
 
 
 def main():
-    path = "C:/Users/ichib/Music/Sort tutorial"
-    logger = logging.getLogger(__name__)
-    logging.basicConfig(filename="logs.log",
-                        encoding='utf-8', level=logging.DEBUG)
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--path", type=str, help="Path to the directory to be sorted", required=True)
+    parser.add_argument(
+        "--type", action="store_true", help="sort files by type"
+    )
+    parser.add_argument(
+        "--undo", action="store_true", help="undo all sorting operation done in directory"
+    )
+    parser.add_argument(
+        "--preview", action="store_true", help="shows where the file will be transferred"
+    )
+    parser.add_argument(
+        "--history", type=str,
+        help="provide a file path in order to store sorting history. This is used for undo",
+        default=f"history_{datetime.now().strftime("%Y%m%d_%H%M%S")}.json"
+    )
+    args = parser.parse_args()
 
-    files = get_files_in_dir(path)
-    for file in files:
-        source_path = file.absolute()
-        destination_path = get_destination_path(path, file)
+    log_file = args.history
 
-        try:
-            logger.debug("moving file from: %s to: %s",
-                         source_path, destination_path)
-            move_file(source_path, destination_path)
-        except Exception as e:
-            logger.error("Fail %s: moving %s from: %s to: %s",
-                         e, file.name, source_path, destination_path)
+    # if args.type:
+    #     sort_by_type(args.path, args.preview, log_file)
+    if args.undo:
+        undo(log_file)
 
-
+    # path = "C:/Users/ichib/Music/Sort tutorial"
 main()
